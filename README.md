@@ -34,6 +34,9 @@ Tam tasarım [`plan.md`](./plan.md) dosyasında:
 - Sağlayıcı ve hesap modeli (BYOK)
 - Yol haritası ve açık kararlar
 
+Oyun motorunun ayrıntılı tasarımı: [`MOTOR-TASARIM.md`](./MOTOR-TASARIM.md) (taş modeli,
+gösterge/okey, per doğrulama, 101 açma, sıra akışı, puanlama, `RuleSet`).
+
 ## Hesap / sağlayıcı modeli
 
 Uygulama **lokal** çalışır ve **BYOK (Kendi API Anahtarını Getir)** modelini

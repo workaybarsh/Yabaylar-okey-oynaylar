@@ -1,7 +1,7 @@
 # Durum ve Devam Notu
 
 > Yeni bir sohbet/oturum başlarken hızlı bağlam için. Ayrıntılı tasarım: [`plan.md`](plan.md),
-> [`README.md`](README.md).
+> [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md), [`README.md`](README.md).
 
 ## Proje
 **101 Okey** oynanabilen ve aynı masada **yapay zekâ rakiplerle sohbet** edilebilen oyun.
@@ -12,6 +12,11 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 - **Tam tasarım planı** (`plan.md`): 101 Okey kuralları, mimari katmanlar (motor = **hakem**),
   AI "serbest muhakeme + son denetim" modeli, bilgi görünürlüğü, hamle protokolü, ret döngüsü,
   sohbet/eş iletişimi, BYOK sağlayıcı modeli.
+- **Oyun motoru genel tasarımı** ([`MOTOR-TASARIM.md`](MOTOR-TASARIM.md)): taş modeli (106 taş,
+  benzersiz kimlik), gösterge/okey/sahte okey türetimi (13→1 sarması), per doğrulama (set/seri/çift
+  + joker yerleştirme), **101 puan / 5 çift açma**, sıra akışı **aşama makinesi** (çek + işle + at),
+  bitiş + puanlama/ceza matrisi, görünürlük (`viewFor`), tohumlu RNG + serileştirme, hakem API'si,
+  modül yapısı, test stratejisi ve **`RuleSet`** ile kural yapılandırması (açık sorular dahil).
 
 ## Önemli kararlar (özet)
 - **Oyun:** 101 Okey — yere açma **≥101 puan** ya da **5 çift**; tüm kural detayları harfiyen
@@ -22,15 +27,26 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 - **Sağlayıcı:** BYOK — DeepSeek/OpenAI/Ollama/Gemini/Claude
 
 ## Sıradaki adım
-1. **Oyun motoru** (arayüzsüz, test edilebilir): 106 taş, gösterge/okey, per doğrulama, 101 açma,
-   sıra akışı — *her şeyin bel kemiği*
-2. Masa arayüzü (sürükle-bırak)
-3. AI oyuncu (serbest muhakeme + hakem ret döngüsü)
-4. Sohbet & eş iletişimi
-5. Sağlayıcı soyutlaması
-6. Paketleme (Windows + Android + Web)
+> Motorun **genel tasarımı bitti** ([`MOTOR-TASARIM.md`](MOTOR-TASARIM.md)). Sıra, karar verilince
+> bu tasarımı koda dökmekte.
+1. **Dil/teknoloji kararı** (plan.md §11) — motor modül sınırları dilden bağımsız hazır
+2. **Motor iskeleti + implementasyon** (arayüzsüz, test edilebilir): taş/deste, gösterge-okey,
+   per doğrulama, 101/5 çift açma, sıra akışı, puanlama — *her şeyin bel kemiği*
+3. Masa arayüzü (sürükle-bırak)
+4. AI oyuncu (serbest muhakeme + hakem ret döngüsü)
+5. Sohbet & eş iletişimi
+6. Sağlayıcı soyutlaması
+7. Paketleme (Windows + Android + Web)
 
 ## Açık kararlar (plan.md)
 - [ ] Platform/teknoloji (öneri: Web-first PWA)
 - [ ] Kaç rakip, hangi modeller
 - [ ] Çok oyunculu (gerçek kişiler) sonraya mı
+
+## Motora özel açık sorular
+> Tam liste: [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md) §15. `RuleSet` ile yapılandırılır.
+- [ ] Sahte okey: "okey yerine" mi, "joker" mi?
+- [ ] Gösterge sahte okey çıkarsa: bir alt taş mı gösterge olur?
+- [ ] Artırmalı açma var mı? (sonraki açan öncekinden fazla mı açar?)
+- [ ] İlk oyuncu/taş sayısı (22'li mi başlar?) · okeyi yerinden alma · deste bitince gösterge
+- [ ] Eş/takım puanları takım toplamı üzerinden mi birleşir?

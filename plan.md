@@ -257,6 +257,7 @@ Sağlayıcı seviyesi:
 ## 10. Yol Haritası
 
 1. **Oyun motoru** — 101 Okey kuralları, durum, hamle doğrulama. Arayüzsüz + test.
+   → Ayrıntılı motor tasarımı: [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md)
 2. **Masa arayüzü** — taşları göster, sürükle-bırak, sıra akışı.
 3. **AI oyuncu** — sistem promptu + serbest muhakeme + hamle protokolü + ret döngüsü.
 4. **Sohbet & eş iletişimi** katmanı.
@@ -268,6 +269,7 @@ Sağlayıcı seviyesi:
 ## 11. Açık Kararlar
 
 - [ ] Platform/teknoloji (Web-first PWA mı, Flutter mı?) — öneri: Web-first PWA.
+  *Motor modül sınırları ve API dilden bağımsızdır → [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md).*
 - [x] 101 Okey kural detayları → **harfiyen uygulanacak** (bölüm 2).
 - [x] Hamle protokolü → **JSON blok** (bölüm 6).
 - [x] Yapay zekâ kişilikleri → **yapay kişilik yok**; modeller doğal üslubuyla.
