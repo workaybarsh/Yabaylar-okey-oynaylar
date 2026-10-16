@@ -1,7 +1,7 @@
 # Durum ve Devam Notu
 
 > Yeni bir sohbet/oturum başlarken hızlı bağlam için. Ayrıntılı tasarım: [`plan.md`](plan.md),
-> [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md), [`README.md`](README.md).
+> [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md), [`README.md`](README.md) · sunum: [`sunum/teknoloji.html`](sunum/teknoloji.html).
 
 ## Proje
 **101 Okey** oynanabilen ve aynı masada **yapay zekâ rakiplerle sohbet** edilebilen oyun.
@@ -17,6 +17,11 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
   + joker yerleştirme), **101 puan / 5 çift açma**, sıra akışı **aşama makinesi** (çek + işle + at),
   bitiş + puanlama/ceza matrisi, görünürlük (`viewFor`), tohumlu RNG + serileştirme, hakem API'si,
   modül yapısı, test stratejisi ve **`RuleSet`** ile kural yapılandırması (açık sorular dahil).
+- **Kilitli kural kararları** (16 Eki 2026): sahte okey = "okey yerine", gösterge alt taş (zincirleme),
+  artırmalı açma yok, okeyi yerinden alma var, eş/takım puanları birleşik — bkz. `MOTOR-TASARIM.md` §15.
+- **TR + EN dil kararı:** arayüz + AI tablo dili iki dilli; motor dilden bağımsız (kod + parametre).
+- **Teknoloji sunumu** ([`sunum/teknoloji.html`](sunum/teknoloji.html) · metin [`sunum/teknoloji.md`](sunum/teknoloji.md)):
+  5 seçeneğin karşılaştırması, **Web-first PWA** önerisi, paketleme (PWA / Tauri / Capacitor), i18n ve riskler.
 
 ## Önemli kararlar (özet)
 - **Oyun:** 101 Okey — yere açma **≥101 puan** ya da **5 çift**; tüm kural detayları harfiyen
@@ -40,7 +45,7 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 7. Paketleme (Windows + Android + Web)
 
 ## Açık kararlar (plan.md)
-- [ ] Platform/teknoloji (öneri: Web-first PWA)
+- [ ] Platform/teknoloji — **öneri: Web-first PWA** (sunum: [`sunum/teknoloji.html`](sunum/teknoloji.html))
 - [ ] Kaç rakip, hangi modeller
 - [ ] Çok oyunculu (gerçek kişiler) sonraya mı
 
@@ -55,3 +60,13 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 ## Kalan motor varsayılanları
 - [ ] İlk oyuncu 22'li (dağıtanın sağı) · deste bitince gösterge çekme · deste bitişi puanı · tur sayısı
   → kaynak varsayılanı uygulanır; itiraz olursa yalnızca `RuleSet` değeri değişir
+
+## Oturum kapanışı — 16 Eki 2026
+Bu oturumda **kod yazılmadı**; tasarım tamamlandı. Olgunlaşan dosyalar:
+`plan.md`, `MOTOR-TASARIM.md`, `DURUM.md`, `BASLA.md`, `README.md`, `sunum/`.
+
+**Yarın buradan devam:**
+1. **Platform kararı** → toplantı/sunum sonrası onay (öneri: Web-first PWA).
+2. Onay gelirse: **motor iskeleti** (TypeScript + Vitest) — `MOTOR-TASARIM.md` §12 modül yapısı ve
+   §11 API'si birebir kodlanır; ilk hedef `tiles/deck/okey/meld` + testler.
+3. Hâlâ açık: kaç rakip & hangi modeller · çok oyunculu sonraya mı · tur sayısı (`dealCount`).
