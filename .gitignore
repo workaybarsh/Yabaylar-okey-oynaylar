@@ -1,0 +1,17 @@
+# OS / editör
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Ortam / sırlar
+.env
+*.key
+secrets/
+
+# Bağımlılıklar & build (ileride)
+node_modules/
+dist/
+build/
+__pycache__/
+*.pyc
