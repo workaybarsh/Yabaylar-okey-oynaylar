@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yabaylar Okey Oynaylar — Teknoloji Seçimi</title>
+<style>
+  @font-face{font-family:'Space Grotesk';src:url('fonts/SpaceGrotesk-Bold.ttf');font-weight:700;font-display:swap}
+  @font-face{font-family:'IBM Plex Sans';src:url('fonts/IBMPlexSans-Regular.ttf');font-weight:400;font-display:swap}
+  @font-face{font-family:'IBM Plex Sans';src:url('fonts/IBMPlexSans-SemiBold.ttf');font-weight:600;font-display:swap}
+  @font-face{font-family:'IBM Plex Sans';src:url('fonts/IBMPlexSans-Bold.ttf');font-weight:700;font-display:swap}
+  @font-face{font-family:'JetBrains Mono';src:url('fonts/JetBrainsMono-Regular.ttf');font-weight:400;font-display:swap}
+  @font-face{font-family:'JetBrains Mono';src:url('fonts/JetBrainsMono-Bold.ttf');font-weight:700;font-display:swap}
+
+  :root{
+    --bg:#0d1117; --bg2:#111823; --panel:#161c26; --panel2:#1b2330;
+    --line:#2a3542; --ink:#e8eef5; --muted:#93a1b3; --dim:#66748a;
+    --red:#e5484d; --blue:#3e7bfa; --yellow:#f5b301; --green:#46c07a;
+    --accent:#f5b301;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+    --disp:'Space Grotesk','IBM Plex Sans',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+  #viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1200px 700px at 78% -10%,#1a2433 0%,#0d1117 55%)}
+  .stage{width:1280px;height:720px;position:relative;flex:none;transform-origin:center center}
+  .slide{position:absolute;inset:0;padding:64px 76px;display:none;flex-direction:column;
+    background:linear-gradient(180deg,rgba(255,255,255,.015),rgba(255,255,255,0) 30%)}
+  .slide.active{display:flex;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .kicker{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:26px;height:2px;background:var(--accent);display:inline-block}
+  h1{font-family:var(--disp);font-size:62px;line-height:1.02;margin:0 0 20px;letter-spacing:-.01em}
+  h2{font-family:var(--disp);font-size:40px;line-height:1.08;margin:0 0 8px;letter-spacing:-.01em}
+  .lead{font-size:20px;color:var(--muted);line-height:1.5;max-width:900px}
+  .sub{color:var(--muted);font-size:17px;line-height:1.55}
+
+  .spacer{flex:1}
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(2,1fr)}
+
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:14px;padding:22px 22px}
+  .card h3{font-family:var(--disp);font-size:20px;margin:0 0 8px}
+  .card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.5}
+  .card .ico{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .num{font-family:var(--disp);font-size:15px;color:var(--accent);margin-bottom:10px;display:block}
+
+  .tiles{display:flex;gap:12px;margin-top:6px}
+  .tile{width:64px;height:88px;border-radius:10px;background:#f3efe6;color:#15181d;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:var(--disp);font-weight:700;font-size:30px;box-shadow:0 6px 16px rgba(0,0,0,.35);position:relative}
+  .tile small{font-family:var(--mono);font-weight:400;font-size:10px;color:#5b6069;margin-top:2px}
+  .tile .bar{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:34px;height:5px;border-radius:3px}
+  .t-red .bar{background:var(--red)} .t-blue .bar{background:var(--blue)}
+  .t-yellow .bar{background:var(--yellow)} .t-black .bar{background:#222}
+
+  ul.clean{list-style:none;margin:0;padding:0}
+  ul.clean li{position:relative;padding:9px 0 9px 30px;color:var(--ink);font-size:17px;border-bottom:1px dashed rgba(255,255,255,.06)}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li::before{content:"";position:absolute;left:6px;top:16px;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+  ul.clean li.muted{color:var(--muted)}
+  ul.clean li.muted::before{background:var(--dim)}
+
+  table{width:100%;border-collapse:collapse;font-size:15.5px}
+  th,td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;font-weight:400}
+  td.opt{font-family:var(--disp);font-size:17px}
+  tr.hl td{background:linear-gradient(90deg,rgba(245,179,1,.12),rgba(245,179,1,0))}
+  tr.hl td.opt{color:var(--yellow)}
+  .dots{letter-spacing:2px;font-size:15px}
+  .d3{color:var(--green)} .d2{color:var(--yellow)} .d1{color:var(--red)} .dx{color:var(--dim)}
+  .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .tag.rec{border-color:var(--yellow);color:var(--yellow)}
+
+  .kv{display:flex;gap:14px;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:13px;padding:7px 13px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--ink)}
+  .pill b{color:var(--accent);font-weight:700}
+
+  .note{margin-top:16px;font-size:14px;color:var(--dim)}
+  code{font-family:var(--mono);font-size:14px;background:#0b0f14;border:1px solid var(--line);padding:2px 7px;border-radius:6px;color:#cfe0ff}
+  .flow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:6px}
+  .node{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-family:var(--disp);font-size:17px}
+  .arrow{color:var(--accent);font-size:22px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .col h3{font-family:var(--disp);font-size:19px;margin:0 0 10px}
+  .pro{color:var(--green);font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+  .con{color:var(--red);font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+
+  /* chrome */
+  .bar-top{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue));width:0;transition:width .25s ease;z-index:5}
+  .footer{position:absolute;left:76px;right:76px;bottom:26px;display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.08em}
+  .nav{position:fixed;bottom:20px;right:24px;display:flex;gap:8px;z-index:20}
+  .nav button{font-family:var(--mono);background:#161c26;color:#c9d6e5;border:1px solid var(--line);border-radius:9px;
+    width:40px;height:36px;font-size:16px;cursor:pointer}
+  .nav button:hover{border-color:var(--yellow);color:var(--yellow)}
+  .counter{position:fixed;bottom:26px;left:26px;font-family:var(--mono);font-size:12px;color:var(--dim);z-index:20}
+
+  @media print{
+    html,body{overflow:visible;height:auto}
+    #viewport{position:static;display:block;background:#fff}
+    .stage{transform:none!important;width:1280px;height:720px;margin:0 auto}
+    .slide{display:flex!important;position:relative;page-break-after:always;border-bottom:1px solid #eee}
+    .nav,.counter,.bar-top{display:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="bar-top" id="bar"></div>
+<div id="viewport"><div class="stage" id="stage">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <div class="kicker">Yabaylar Okey Oynaylar</div>
+    <h1>Teknoloji<br/>Seçimi</h1>
+    <p class="lead">101 Okey + yapay zekâ rakipler · Windows + Android + Web.<br/>
+      Tek kod tabanı, arayüzsüz hakem motoru, TR&nbsp;+&nbsp;EN.</p>
+    <div class="spacer"></div>
+    <div class="tiles">
+      <div class="tile t-red"><span class="bar"></span>7<small>KIRMIZI</small></div>
+      <div class="tile t-black"><span class="bar"></span>11<small>SİYAH</small></div>
+      <div class="tile t-blue"><span class="bar"></span>3<small>MAVİ</small></div>
+      <div class="tile t-yellow"><span class="bar"></span>★<small>OKEY</small></div>
+    </div>
+    <div class="footer"><span>TASARIM SUNUMU</span><span>16 EKİM 2026</span></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="kicker">Bağlam</div>
+    <h2>Neyi inşa ediyoruz?</h2>
+    <p class="sub" style="margin-bottom:22px">Karar, aşağıdaki gerçeklere göre verilmeli.</p>
+    <div class="grid g4">
+      <div class="card"><span class="num">01</span><h3>3 platform, 1 ürün</h3><p>Windows masaüstü, Android ve Web (PWA). Aynı oyun, aynı kurallar.</p></div>
+      <div class="card"><span class="num">02</span><h3>Arayüzsüz hakem motoru</h3><p>Saf mantık; UI'dan bağımsız, %100 test edilebilir. Hamle <em>önermez</em>, doğrular.</p></div>
+      <div class="card"><span class="num">03</span><h3>Sürükle-bırak masa</h3><p>Taş dizme, per açma, animasyonlar, dokunmatik. Görsel kalite önemli.</p></div>
+      <div class="card"><span class="num">04</span><h3>BYOK + yerel çalışma</h3><p>Kullanıcı kendi API anahtarını girer; cihazda <b>şifreli</b> saklanır, sunucu yok.</p></div>
+      <div class="card"><span class="num">05</span><h3>TR + EN</h3><p>Arayüz ve yapay zekâ tablo dili iki dilli. Motor dilden bağımsız (kod + parametre).</p></div>
+      <div class="card"><span class="num">06</span><h3>LLM çağrıları</h3><p>OpenAI-uyumlu HTTP (DeepSeek/OpenAI/Ollama/Gemini/Claude) + streaming.</p></div>
+    </div>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">Değerlendirme</div>
+    <h2>Hangi kriterlere bakıyoruz?</h2>
+    <div class="grid g3" style="margin-top:20px">
+      <div class="card"><h3>Tek kod tabanı</h3><p>Aynı kod Windows + Android + Web'de. Üç ayrı uygulama yazmak yok.</p></div>
+      <div class="card"><h3>Motorun paylaşımı</h3><p>Hakem motoru tüm platformlarda <b>aynı</b> çalışmalı; tek test seti.</p></div>
+      <div class="card"><h3>Arayüz gücü</h3><p>Sürükle-bırak, animasyon, dokunmatik — "yerli" his.</p></div>
+      <div class="card"><h3>Paketleme kolaylığı</h3><p>Mağaza/dağıtım: .exe, Play Store, tarayıcı.</p></div>
+      <div class="card"><h3>Ekosistem & i18n</h3><p>TR/EN sözlük, LLM istemcisi, hazır bileşenler.</p></div>
+      <div class="card"><h3>Geliştirici hızı</h3><p>Teknoloji kararı ilk prototipi ne kadar hızlandırır?</p></div>
+    </div>
+    <div class="note">Kriterler eşit ağırlıklı değil: önceliğimiz <b>tek kod tabanı + hızlı teslim</b>.</div>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kicker">Seçenekler</div>
+    <h2>Karşılaştırma</h2>
+    <table style="margin-top:12px">
+      <thead><tr>
+        <th>Teknoloji</th><th>Tek kod</th><th>Motor</th><th>Arayüz</th><th>Paketleme</th><th>Ekosistem</th><th></th>
+      </tr></thead>
+      <tbody>
+        <tr class="hl">
+          <td class="opt">Web-first PWA · TypeScript</td>
+          <td class="dots d3">●●●</td><td class="dots d3">●●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td><td class="dots d3">●●●</td>
+          <td><span class="tag rec">ÖNERİLEN</span></td>
+        </tr>
+        <tr>
+          <td class="opt">Flutter · Dart</td>
+          <td class="dots d3">●●●</td><td class="dots d2">●●</td><td class="dots d3">●●●</td><td class="dots d3">●●●</td><td class="dots d2">●●</td>
+          <td><span class="tag">güçlü alternatif</span></td>
+        </tr>
+        <tr>
+          <td class="opt">React Native · Expo</td>
+          <td class="dots d3">●●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td>
+          <td><span class="tag">mobil odaklı</span></td>
+        </tr>
+        <tr>
+          <td class="opt">Tauri · Rust + Web UI</td>
+          <td class="dots d2">●●</td><td class="dots d3">●●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td><td class="dots d2">●●</td>
+          <td><span class="tag">masaüstü odaklı</span></td>
+        </tr>
+        <tr>
+          <td class="opt">Unity / Godot</td>
+          <td class="dots d3">●●●</td><td class="dots d1">●</td><td class="dots d3">●●●</td><td class="dots d3">●●●</td><td class="dots d2">●●</td>
+          <td><span class="tag">ağır / gereksiz</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>●●● güçlü · ●● orta · ● zayıf</span></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">İlk üç</div>
+    <h2>Öne çıkanlar — artı / eksi</h2>
+    <div class="two" style="margin-top:14px">
+      <div class="col">
+        <h3>Web-first PWA <span class="tag rec">öneri</span></h3>
+        <p class="pro">+ tek dil (motor = TS), hızlı prototip</p>
+        <p class="pro">+ i18n ve LLM istemcisi hazır ekosistem</p>
+        <p class="pro">+ tarayıcıda anında; Tauri/Capacitor ile paket</p>
+        <p class="con">− WebView animasyon/performans sınırı</p>
+        <p class="con">− mobile "native his" için ekstra özen</p>
+      </div>
+      <div class="col">
+        <h3>Flutter · Dart</h3>
+        <p class="pro">+ tek kod, gerçek native performans</p>
+        <p class="pro">+ güçlü animasyon, tutarlı görünüm</p>
+        <p class="con">− motor <b>Dart</b> ile yeniden yazılır</p>
+        <p class="con">− web çıktısı hâlâ en zayıf halka</p>
+      </div>
+    </div>
+    <div class="two" style="margin-top:8px">
+      <div class="col">
+        <h3>React Native · Expo</h3>
+        <p class="pro">+ mobilde olgun ve hızlı</p>
+        <p class="con">− web desteği (RNW) zayıf → 3. platform sorunlu</p>
+        <p class="con">− Windows masaüstü ekstra iş</p>
+      </div>
+      <div class="col">
+        <h3>Ortak sonuç</h3>
+        <p class="sub">Motor zaten <b>dilden bağımsız</b> tasarlandı; asıl fark, arayüzü kaç kod tabanıyla yazacağımız ve paketleme maliyeti.</p>
+      </div>
+    </div>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="kicker">Öneri</div>
+    <h2>Web-first PWA (TypeScript)</h2>
+    <p class="lead" style="margin-bottom:20px">Tek dil, tek motor, üç platform. Motor tasarımı zaten TS-benzeri API'lerle yazıldı.</p>
+    <div class="flow">
+      <span class="node">Oyun Motoru <code>TS</code></span><span class="arrow">→</span>
+      <span class="node">Masa Arayüzü</span><span class="arrow">→</span>
+      <span class="node">AI Katmanı</span><span class="arrow">→</span>
+      <span class="node">Sağlayıcı (BYOK)</span>
+    </div>
+    <ul class="clean" style="margin-top:20px">
+      <li>Motor saf TS → tarayıcı, Android ve Windows'ta <b>aynı</b> kod, aynı testler (<code>Vitest</code>).</li>
+      <li>Arayüz: <b>Vite</b> + <b>Svelte</b> (veya React) — hafif, hızlı, sürükle-bırak için ideal.</li>
+      <li>LLM: <code>fetch</code> ile OpenAI-uyumlu istemci (DeepSeek/OpenAI/Ollama) + Gemini/Claude adaptörü.</li>
+      <li>i18n: <b>i18next</b> ile TR/EN sözlükleri; motor yalnızca kod+parametre döner.</li>
+    </ul>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">Paketleme</div>
+    <h2>Tek kod tabanı → üç platform</h2>
+    <div class="grid g3" style="margin-top:22px">
+      <div class="card"><span class="ico">WEB</span><h3 style="margin-top:10px">PWA</h3><p>Statik site + service worker. Çevrimdışı, kurulabilir, anında güncellenir.</p></div>
+      <div class="card"><span class="ico">ANDROID</span><h3 style="margin-top:10px">Capacitor</h3><p>Web kodu native kabukta; Play Store paketi. (Alternatif: TWA)</p></div>
+      <div class="card"><span class="ico">WINDOWS</span><h3 style="margin-top:10px">Tauri</h3><p>Rust kabuğu, ~küçük .exe. (Alternatif: Electron)</p></div>
+    </div>
+    <div class="flow" style="margin-top:26px">
+      <span class="node">Tek UI kodu</span><span class="arrow">→</span>
+      <span class="node">PWA</span><span class="arrow">/</span>
+      <span class="node">Capacitor</span><span class="arrow">/</span>
+      <span class="node">Tauri</span>
+    </div>
+    <div class="note">Anahtar güvenliği: <code>Tauri Stronghold</code> / <code>Capacitor Secure Storage</code> → OS anahtarlığı (Windows Credential Manager, Android Keystore).</div>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kicker">Çift dil</div>
+    <h2>TR + EN nasıl işler?</h2>
+    <div class="grid g2" style="margin-top:22px">
+      <div class="card"><span class="ico">MOTOR</span><h3 style="margin-top:10px">Dilden bağımsız</h3>
+        <p>Metin üretmez; <code>{ reason, params }</code> döner.<br/><br/>
+        <code>{ reason:"OPEN_BELOW_THRESHOLD", params:{have:74, need:101} }</code></p></div>
+      <div class="card"><span class="ico">ARAYÜZ</span><h3 style="margin-top:10px">Sözlük (i18n)</h3>
+        <p>Aynı kodu TR/EN metne çevirir.<br/><br/>
+        <b>TR:</b> "Açma için en az 101 puan gerekiyor; grupların 74."<br/>
+        <b>EN:</b> "You need at least 101 to open; your melds total 74."</p></div>
+      <div class="card"><span class="ico">YAPAY ZEKÂ</span><h3 style="margin-top:10px">Tablo dili</h3>
+        <p>Sistem promptu seçili dile göre kurulur; model zaten o dilde konuşur (doğal üslup, yapay kişilik yok).</p></div>
+      <div class="card"><span class="ico">TAŞLAR</span><h3 style="margin-top:10px">Anahtar gösterim</h3>
+        <p><code>kirmizi-9</code> dilden bağımsız anahtardır; renk adları ekranda yerelleştirilir.</p></div>
+    </div>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>MOTOR-TASARIM.md §9.1</span></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="kicker">Dürüst değerlendirme</div>
+    <h2>Riskler ve önlemler</h2>
+    <table style="margin-top:14px">
+      <thead><tr><th>Risk</th><th>Önlem</th></tr></thead>
+      <tbody>
+        <tr><td>WebView animasyon/performans</td><td>Canvas/GPU (WebGL) katmanı; kritik animasyonları ölç, gerekirse native köprü</td></tr>
+        <tr><td>Mobilde "native his"</td><td>Capacitor + native geçişler; dokunma/haptic ince ayarı</td></tr>
+        <tr><td>API anahtarı güvenliği (BYOK)</td><td>Cihaz anahtarlığı; anahtar sunucuya <b>gitmez</b></td></tr>
+        <tr><td>Tek dile bağımlılık (TS)</td><td>Motor saf ve taşınabilir; ileride Dart/C# portu mümkün</td></tr>
+        <tr><td>Web'de LLM CORS</td><td>Yerel proxy veya sağlayıcı izinleri; Tauri/Capacitor'da sorun yok</td></tr>
+      </tbody>
+    </table>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TASARIM SUNUMU</span></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <div class="kicker">Karar</div>
+    <h2>Öneri & sıradaki adım</h2>
+    <div class="two" style="margin-top:18px">
+      <div class="col">
+        <h3 style="color:var(--yellow)">Karar: Web-first PWA</h3>
+        <ul class="clean">
+          <li>Motor + UI tek dilde (TypeScript)</li>
+          <li>Windows (Tauri) · Android (Capacitor) · Web (PWA)</li>
+          <li>TR/EN ve LLM entegrasyonu en kolay</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Sıradaki adım</h3>
+        <ul class="clean">
+          <li class="muted">Onay → motor iskeleti (<code>Vitest</code>) + testler</li>
+          <li class="muted">Masa arayüzü prototipi (sürükle-bırak)</li>
+          <li class="muted">AI katmanı (ret döngüsü) ve BYOK</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <p class="lead">Alternatif: <b>Flutter</b> — native his öncelikliyse.</p>
+    <div class="footer"><span>YABAYLAR OKEY OYNAYLAR</span><span>TEŞEKKÜRLER</span></div>
+  </section>
+
+</div></div>
+
+<div class="counter" id="counter"></div>
+<div class="nav"><button id="prev" title="Geri">←</button><button id="next" title="İleri">→</button></div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0, n=slides.length;
+  const bar=document.getElementById('bar'), counter=document.getElementById('counter');
+  function show(k){
+    i=Math.max(0,Math.min(n-1,k));
+    slides.forEach((s,j)=>s.classList.toggle('active',j===i));
+    bar.style.width=((i+1)/n*100)+'%';
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');
+  }
+  function fit(){
+    const vw=innerWidth, vh=innerHeight-70;
+    const s=Math.min(vw/1280, vh/720);
+    document.getElementById('stage').style.transform='scale('+s+')';
+  }
+  addEventListener('resize',fit); fit(); show(0);
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.getElementById('next').onclick=()=>show(i+1);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);} else if(e.key==='End'){show(n-1);}
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  });
+  addEventListener('click',e=>{ if(e.target.closest('.nav'))return; show(i+1); });
+})();
+</script>
+</body>
+</html>

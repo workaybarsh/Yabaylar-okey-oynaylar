@@ -20,6 +20,7 @@ Proje: Yabaylar okey oynaylar — 101 Okey + yapay zekâ rakipler.
   AI serbest muhakeme eder; tool/ipucu/aday liste YOK. Yapay kişilik YOK (her model kendi üslubuyla).
   Ret sınırı YOK + 10 sn hız uyarısı (tura özel). Sağlayıcı: BYOK (DeepSeek/OpenAI/Ollama/Gemini/Claude).
 - Hamle protokolü: model serbest metin + sonda <hamle>{JSON}</hamle> bloğu.
+- Diller: Türkçe + İngilizce (arayüz + AI); motor dilden bağımsız (kod + parametre döner).
 
 Durum: Oyun motorunun genel tasarımı bitti (MOTOR-TASARIM.md); kural kararları §15'te kilitlendi.
 Sıradaki iş: dil/teknoloji kararı (plan.md §11) + motor iskeleti/implementasyonu

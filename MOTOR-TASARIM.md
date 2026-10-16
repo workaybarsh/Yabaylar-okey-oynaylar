@@ -26,7 +26,8 @@ cevap verir; uygunsa uygular, değilse **nedenini** döner.
 | **Deterministik** | Tüm rastgelelik **enjekte edilebilir, tohumlu (seeded) RNG** ile. Aynı tohum → aynı oyun. |
 | **Değişmez (immutable) durum** | Her geçiş yeni bir durum üretir: `(state, move) → state`. Eski durum bozulmaz (geri alma, AI replaysi, test için). |
 | **Serileştirilebilir** | Durum tam olarak JSON'a yazılıp okunabilir (kaydet/yükle, AI promptu, fuzz). |
-| **Hata ≠ çökme** | Kural ihlali bir **ret**tir: `{ ok:false, reason:<kod>, message:<insan dili> }`. İstisna (exception) fırlatmaz. |
+| **Hata ≠ çökme** | Kural ihlali bir **ret**tir: `{ ok:false, reason:<kod>, params:<...> }`. İstisna (exception) fırlatmaz. |
+| **Dilden bağımsız (i18n)** | Motor **kod + parametre** döner, **yerelleştirilmiş metin üretmez**; TR/EN metni arayüz/AI katmanı kurar (§9.1). |
 | **Görünürlük ayrı** | Motor tüm durumu tutar; katmanlar **oyuncuya özel görünüm** (`view`) alır. Kapalı el sızmaz. |
 | **Kural yapılandırılabilir** | Bölgede değişen noktalar `RuleSet` ile açık/kapalı yönetilir (§15). "Harfiyen" = bu varsayılanların kilitlenmesi. |
 
@@ -352,6 +353,16 @@ function viewFor(state: GameState, player: number): PlayerView
 
 UI **ve** AI aynı `PlayerView`'ı kullanır → kapalı elin sızması yapısal olarak imkânsız.
 
+### 9.1 Diller (TR + EN)
+- Motor **hiçbir dilde metin üretmez**; ret sonuçları `reason` **kodu + `params`** döner
+  (örn. `{ reason:"OPEN_BELOW_THRESHOLD", params:{ have:74, need:101 } }`).
+- İnsan dili mesaj **arayüz sözlüğünde** (TR/EN) üretilir; aynı kod+params AI'nın
+  geri bildirim metnine de dönüştürülür (tablonun dili neyse o).
+- **AI sistemi** seçili **tablo diline** göre hazırlanır; model zaten o dilde konuşur
+  (plan.md §4 "doğal üslup").
+- **Taş gösterimi** (`kirmizi-9`) ve renk anahtarları **dilden bağımsız anahtardır**;
+  ekranda yerelleştirilir (renk adları TR/EN).
+
 ---
 
 ## 10. Determinizm, RNG, serileştirme
@@ -394,10 +405,11 @@ parseMove(json): { ok:true, move } | { ok:false, reason }   // bozuk JSON = ret
 { "tip": "per_ac", "perler": [["kirmizi-5","mavi-5","siyah-5"],["kirmizi-7","kirmizi-8","kirmizi-9"]],
   "sohbet": "bu el iyi geldi" }
 ```
-**Ret örneği (motorun sesi):**
+**Ret örneği (motorun sesi → yerelleştirme arayüzde):**
 ```
-{ ok:false, reason:"OPEN_BELOW_THRESHOLD",
-  message:"Açma için en az 101 puan gerekiyor; grupların 74. (ya da 5 çift)" }
+{ ok:false, reason:"OPEN_BELOW_THRESHOLD", params:{ have:74, need:101 } }
+// UI/AI (TR): "Açma için en az 101 puan gerekiyor; grupların 74. (ya da 5 çift)"
+// UI/AI (EN): "You need at least 101 to open; your melds total 74 (or 5 pairs)."
 ```
 
 ---

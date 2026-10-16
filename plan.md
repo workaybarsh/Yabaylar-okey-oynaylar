@@ -271,6 +271,9 @@ Sağlayıcı seviyesi:
 
 - [ ] Platform/teknoloji (Web-first PWA mı, Flutter mı?) — öneri: Web-first PWA.
   *Motor modül sınırları ve API dilden bağımsızdır → [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md).*
+- [x] Dil desteği → **Türkçe + İngilizce** (arayüz + yapay zekâ tablo dili). *Motor dilden
+  bağımsız: kod + parametre döner, metin arayüzde → [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md) §9.1.*
+  Teknoloji seçenekleri sunumu: [`sunum/teknoloji.html`](sunum/teknoloji.html).
 - [x] 101 Okey kural detayları → **harfiyen uygulanacak** (bölüm 2).
 - [x] Hamle protokolü → **JSON blok** (bölüm 6).
 - [x] Yapay zekâ kişilikleri → **yapay kişilik yok**; modeller doğal üslubuyla.

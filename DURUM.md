@@ -25,6 +25,7 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 - **Yapay kişilik YOK:** her model (Gemini/DeepSeek/GPT/Claude) kendi doğal üslubuyla konuşur
 - **Ret sınırı YOK** + **10 sn hız uyarısı** (yalnızca o tura özel)
 - **Sağlayıcı:** BYOK — DeepSeek/OpenAI/Ollama/Gemini/Claude
+- **Diller:** **Türkçe + İngilizce** (arayüz + AI tablo dili); motor dilden bağımsız (kod + parametre)
 
 ## Sıradaki adım
 > Motorun **genel tasarımı bitti** ([`MOTOR-TASARIM.md`](MOTOR-TASARIM.md)). Sıra, karar verilince
