@@ -21,7 +21,7 @@ Proje: Yabaylar okey oynaylar — 101 Okey + yapay zekâ rakipler.
   Ret sınırı YOK + 10 sn hız uyarısı (tura özel). Sağlayıcı: BYOK (DeepSeek/OpenAI/Ollama/Gemini/Claude).
 - Hamle protokolü: model serbest metin + sonda <hamle>{JSON}</hamle> bloğu.
 
-Durum: Oyun motorunun genel tasarımı bitti (MOTOR-TASARIM.md).
+Durum: Oyun motorunun genel tasarımı bitti (MOTOR-TASARIM.md); kural kararları §15'te kilitlendi.
 Sıradaki iş: dil/teknoloji kararı (plan.md §11) + motor iskeleti/implementasyonu
 (arayüzsüz, test edilebilir): 106 taş, gösterge/okey, per doğrulama, 101 açma, sıra akışı.
 ```

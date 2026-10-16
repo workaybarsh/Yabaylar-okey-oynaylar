@@ -58,6 +58,7 @@ Kullanıcının **101 Okey** oynayabildiği ve aynı masada yapay zekâ rakipler
 
 **Kural detayları (harfiyen uygulanır)**
 - Sahte okey (göstergenin eşi) davranışı uygulanır.
+  *Karar: sahte okey "okey yerine" geçer (evrensel joker değil) — ayrıntı [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md) §3/§15.*
 - Okeyi yerinden alma: elinde okey yerine geçen gerçek taş varsa (açmış olmak
   şartıyla) okeyi alabilir.
 - Açmadan önce geçerli taş atma cezası: 101 ceza puanı uygulanır.

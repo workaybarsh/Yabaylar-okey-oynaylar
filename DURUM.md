@@ -43,10 +43,14 @@ Repo: `github.com/workaybarsh/Yabaylar-okey-oynaylar`
 - [ ] Kaç rakip, hangi modeller
 - [ ] Çok oyunculu (gerçek kişiler) sonraya mı
 
-## Motora özel açık sorular
-> Tam liste: [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md) §15. `RuleSet` ile yapılandırılır.
-- [ ] Sahte okey: "okey yerine" mi, "joker" mi?
-- [ ] Gösterge sahte okey çıkarsa: bir alt taş mı gösterge olur?
-- [ ] Artırmalı açma var mı? (sonraki açan öncekinden fazla mı açar?)
-- [ ] İlk oyuncu/taş sayısı (22'li mi başlar?) · okeyi yerinden alma · deste bitince gösterge
-- [ ] Eş/takım puanları takım toplamı üzerinden mi birleşir?
+## Motora özel kararlar (16 Eki 2026)
+> Ayrıntı ve gerekçe: [`MOTOR-TASARIM.md`](MOTOR-TASARIM.md) §15 (`RuleSet` + Karar Günlüğü).
+- [x] **Sahte okey:** "okey yerine" geçer (evrensel joker **değil**)
+- [x] **Gösterge sahte okey çıkarsa:** bir alt taş gösterge olur; gerekirse **zincirleme** iner
+- [x] **Artırmalı açma:** **yok** — her açan 101'den başlar
+- [x] **Okeyi yerinden alma:** **var** (gerçek taşla değiştirip okeyi ele al)
+- [x] **Eş/takım puanları:** **birleştirilir** (takım toplamı üzerinden)
+
+## Kalan motor varsayılanları
+- [ ] İlk oyuncu 22'li (dağıtanın sağı) · deste bitince gösterge çekme · deste bitişi puanı · tur sayısı
+  → kaynak varsayılanı uygulanır; itiraz olursa yalnızca `RuleSet` değeri değişir

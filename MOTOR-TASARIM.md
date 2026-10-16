@@ -1,6 +1,6 @@
 # Oyun Motoru — Genel Tasarım (101 Okey · arayüzsüz · **hakem**)
 
-> **Durum:** Tasarım / planlama. Henüz kod yok.
+> **Durum:** Tasarım / planlama. Henüz kod yok. **Kural kararları (Karar 1–5) kilitlendi → §15.**
 > Bu doküman, [`plan.md`](plan.md) §2 (kurallar), §3 (katmanlar), §6 (hamle protokolü) ve
 > §7 (ret döngüsü) bölümlerini **motor düzeyinde** somutlaştırır.
 >
@@ -85,23 +85,25 @@ interface OkeyInfo {
   (seride sarma yok — §4).
 - **Gerçek okey taşları:** gösterge koordinatına **eşit olan 2 fiziksel taş** (`color`+`number`).
   Bunlar **herhangi bir taşın yerine geçen joker**dir (evrensel joker).
-- **Sahte okey (riziko):** üzerinde sembol olan **2 taş**. Gösterge hangi taşa denk gelirse
-  gelsin, bu taşlar **okey taşının (gösterge+1) rengini ve sayısını alır**; yani **okey
-  koordinatını temsil eder**. Joker değildir; yalnızca okeyin kendisi yerine geçer.
+- **Sahte okey (riziko) — KARAR 1 (kilitli):** üzerinde sembol olan **2 taş**. Gösterge hangi
+  taşa denk gelirse gelsin, bu taşlar **okey taşının (gösterge+1) rengini ve sayısını alır**;
+  yani **okey koordinatını temsil eder**. **Evrensel joker DEĞİLDİR**; yalnızca okeyin kendisi
+  yerine geçer (`RuleSet.sahteOkey = "okeyYerine"`).
   → Plan.md'deki *"Sahte okey (göstergenin eşi) davranışı uygulanır"* maddesinin motor
-  karşılığı budur; **tam davranış `RuleSet.sahteOkey` ile yapılandırılır** (§15, Açık Soru 1).
+  karşılığı budur (bkz. §15 Karar 1).
 
 ```
 function deriveOkey(indicator: Tile): OkeyInfo          // 13→1 sarması burada
 function isRealOkey(t: Tile, info: OkeyInfo): boolean   // t.color==info.color && t.number==info.number
 function isFalseOkey(t: Tile): boolean                  // kind=="sahte_okey"
-function isWild(t: Tile, info: OkeyInfo): boolean       // perde joker gibi kullanılabilir mi? (real okey; sahte okey'e göre config)
+function isWild(t: Tile, info: OkeyInfo): boolean       // yalnızca GERÇEK okey joker sayılır (KARAR 1)
 function effectiveOkeyCoord(t: Tile, info): {color?, number}   // per doğrulamada kullanılan "etkin" koordinat
 ```
 
-**Uç durum:** Gösterge olarak **sahte okey** çıkarsa (renksiz taş) okey doğrudan hesaplanamaz;
-bölge kuralı gereği *göstergenin altındaki taş* gösterge sayılır. Bu, `deriveOkey` içinde
-`RuleSet.indicatorIfFalseOkey` ile ele alınır (varsayılan: bir alt taşı gösterge yap).
+**Uç durum — KARAR 2 (kilitli):** Gösterge olarak **sahte okey** çıkarsa (renksiz taş) okey
+doğrudan hesaplanamaz; **göstergenin bir altındaki taş** gösterge sayılır. O taş da sahte
+okey ise **zincirleme olarak bir alt taşa** inilir (numaralı taşa ulaşana kadar).
+`deriveOkey` bunu `RuleSet.indicatorIfFalseOkey = "altTasZincir"` ile uygular.
 
 ---
 
@@ -195,8 +197,8 @@ Ek kurallar:
   ceza yok). Açmışsa da aldığı taşı kullanmak zorundadır.
 - **Açma, bitirme hakkı doğurur** ama bitmek için yine de **son taş atılmalıdır**
   (açıp eli bitirmek, elde taş kalmamak demek değildir — bir *bitiş taşı* gerekir).
-- **Artırmalı varyant (opsiyonel):** bir sonraki açan, önceki en yüksek açma değerinden
-  **fazla** açmalı (`RuleSet.escalatingOpen`, varsayılan **kapalı**; §15, Açık Soru 3).
+- **Artırmalı açma YOK (KARAR 3, kilitli):** bir sonraki açan da **101'den** başlar; önceki
+  açanın değeri eşiği yükseltmez (`RuleSet.escalatingOpen = false`).
 - **Sayı tutmadan elden bitme:** 21 taşı tek turda, kimse açmadan açıp bitiren oyuncu, açma
   eşiğini tutmasa da bitebilir (bkz. §8 "elden").
 
@@ -206,8 +208,8 @@ Ek kurallar:
 
 **Dağıtım:** 106 taş karılır; her oyuncuya 21, **dağıtanın sağındaki** oyuncuya **22** taş.
 Bir taş gösterge olarak açılır. **Oyun saat yönünün tersine** oynanır ve **22 taşlı oyuncu
-(dağıtanın sağı) çekmeden atarak başlar.** Dağıtan/yürüyen farkı `RuleSet` ile
-yapılandırılır (§15, Açık Soru 4).
+(dağıtanın sağı) çekmeden atarak başlar.** Taş sayısı/sırası `RuleSet` ile yapılandırılır
+(motor varsayılanı; §15).
 
 **Normal tur = 1 çek/topla + (isteğe bağlı per işlemleri) + 1 at:**
 
@@ -289,10 +291,10 @@ type Phase =
 ### 8.1 Tur bitiş koşulları
 1. **Bir oyuncu bitirir** (açtıktan sonra son taşını atar) → puanlama.
 2. **Deste biter** ve sıradaki oyuncu ne çekebilir ne de yerdekini kullanmak ister → tur
-   puansız biter; **elde kalan her joker için 101 ceza**. (Göstergeyi alıp bitirme §15,
-   Açık Soru 6.)
+   puansız biter; **elde kalan her joker için 101 ceza**. (Bitirebiliyorsa göstergeyi çekip
+   bitirebilir — `RuleSet.allowIndicatorDraw`.)
 3. **Dört oyuncu da çift açarsa** → tur iptal, yeniden dağıtılır, ceza yok.
-4. *(opsiyonel)* **Eş/takım** modunda takım toplamı ile karar (§15, Açık Soru 8).
+4. **Eş/takım modu (KARAR 5)** → puanlar **takım toplamı** üzerinden birleştirilir (bkz. §8.5).
 
 ### 8.2 Puanlama matrisi (tur sonu, tek el)
 - Biten, set/seri açmış, **joker atarak bitmemişse**: **biten −101**; açanlar elindeki taşların
@@ -313,12 +315,19 @@ type Phase =
 - Oyuncu açmaya kalkıp **101'i (ya da 5 çifti) tutturamayıp** taşlarını geri alıyorsa.
 - Masaya **birden fazla taş** koyup **geri alıyorsa** (yalnızca **son** taş cezasız geri alınır).
 - **Joker atılırsa**.
-- (Eşli varyant) yerden çekilen taşla açma durumunda karşı takıma yazılan ceza — §15.
+- (Eşli mod) yerden alınan taşla açma durumunda ceza **karşı takıma** yazılır (§8.5).
 
 ### 8.4 Ret ≠ ceza
 Kural/fizik ihlali (`olmayan taş`, `geçersiz per`, `101 altı açma`, `sırasız hamle`,
 `kullanılmayan yerden-alınan taş`) → **ret** (§1, plan.md §7).
 **Kötü ama geçerli, hatta cezalı hamle reddedilmez** → uygulanır, ceza kaydedilir.
+
+### 8.5 Eş / takım puanlaması (KARAR 5, kilitli)
+- Oyuncular **2 takım**: A–C ve B–D (karşılıklı oturanlar eş).
+- Her elin cezaları **eşler arasında birleştirilir**; turlar sonunda **toplamı düşük olan takım** kazanır.
+- **Varsayılan (`teamScoreMode = "birlesik"`):** eşlerden biri eli bitirirse **diğer eşin cezası
+  silinir**; aksi halde iki eşin el cezaları takım hanesine toplanır.
+- `"bireyselSonraTopla"` modu (önce bireysel ceza, sonra takıma topla) `RuleSet` ile seçilebilir.
 
 ---
 
@@ -450,46 +459,49 @@ Kural kaynaklarından alınan **örnek eller** (örn. `1-1-1, 10-11-12, 8-9-10, 
 
 ---
 
-## 15. Kural yapılandırması ve açık sorular
+## 15. Kararlaştırılan kurallar (`RuleSet`)
 
-Bölgesel/uygulama farkları tek yerde toplanır: `RuleSet`. **"Harfiyen"** hedefi = aşağıdaki
-varsayılanların dondurulması; kararlar netleşince bu tablo kilitlenir.
+Bölgesel/uygulama farkları tek yerde toplanır: `RuleSet`. Aşağıdaki **1–5 karara bağlandı**
+(proje sahibinin onayı, 16 Ekim 2026); motor bunları **kilitli** uygular. Kaynak varsayılanı
+olan diğerleri (ilk oyuncu, deste bitişi vb.) motor varsayılanıdır ve gerekirse yalnızca
+`RuleSet` değeri değiştirilerek uyarlanır — kod değişmez.
 
 ```
 interface RuleSet {
-  openThreshold: number;        // varsayılan 101
-  pairsToOpen: number;          // varsayılan 5
-  runsAllowWrap: boolean;       // varsayılan false (101: 1 yalnızca en küçük)
-  sahteOkey: "okeyYerine" | "joker" | "kilitli";   // Açık Soru 1
-  jokerPairs: boolean;          // çiftte joker kullanımı
-  escalatingOpen: boolean;      // artırmalı 101 (varsayılan false) — Açık Soru 3
-  firstPlayer: "22li" | "dagitAn";                 // Açık Soru 4
-  falseOkeyAsIndicator: "altTas" | "reddet";       // Açık Soru 2
-  allowOkeyReclaim: boolean;    // okeyi yerinden alma (plan.md: true; pagat: false) — Açık Soru 5
-  allowIndicatorDraw: "bitirebilirse" | "hayir" | "herZaman"; // Açık Soru 6
-  deckExhausted: "puansiz" | "kalanlar";           // Açık Soru 7
-  allPairsVoid: boolean;        // 4 oyuncu çift açarsa tur iptal (varsayılan true)
-  teams: "yok" | "es";          // §8, takım puan toplama — Açık Soru 8
+  // ── Kilitli kararlar ──────────────────────────────────────────────
+  openThreshold: 101,
+  pairsToOpen: 5,
+  runsAllowWrap: false,             // 101: 1 yalnızca en küçük (13→1 seride yok)
+  sahteOkey: "okeyYerine",          // KARAR 1
+  indicatorIfFalseOkey: "altTasZincir",  // KARAR 2
+  escalatingOpen: false,            // KARAR 3
+  allowOkeyReclaim: true,           // KARAR 4
+  teams: "es",                      // KARAR 5
+  teamScoreMode: "birlesik",        // KARAR 5 (bkz. §8.5)
+
+  // ── Motor varsayılanları (kaynak temelli) ─────────────────────────
+  jokerPairs: true,                 // çiftte joker yanına gelirse çift sayılır
+  firstPlayer: "22li",              // dağıtanın sağı, 22 taş, çekmeden atar
+  allowIndicatorDraw: "bitirebilirse", // deste bitince, bitirebiliyorsa göstergeyi al
+  deckExhausted: "puansizJoker101", // puansız bitiş + eldeki her joker 101
+  allPairsVoid: true,               // 4 oyuncu da çift açarsa tur iptal
+  dealCount: null,                  // 3/5/7/9/11 — arayüz seçer
 }
 ```
 
-**Açık sorular (karar bekliyor):**
+**Karar günlüğü:**
 
-1. **Sahte okey semantiği.** *Joker gibi her taşın yerine mi geçer, yalnızca okey koordinatı
-   mı?* Kaynaklar çelişiyor: pagat/LITE *"joker değildir, yalnızca okey yerine geçer"* der;
-   Zynga *"okeyin sayı değerini ve rengini alır"* der. **Öneri:** varsayılan `"okeyYerine"`
-   (okey koordinatını temsil eder), gerekirse `"joker"` ile genişlet.
-2. **Gösterge sahte okey çıkarsa:** bir alt taş mı gösterge olur, red mi? *(Bölge turnuvası:
-   alt taş.)*
-3. **Artırmalı açma:** sonraki açan öncekinden fazla mı açmalı? (plan.md'de yok → varsayılan kapalı.)
-4. **İlk oyuncu & taş sayısı:** 22 taşlı (dağıtanın sağı) başlar (TR Vikipedi/pagat) mi, dağıtan mı?
-5. **Okeyi yerinden alma:** 101'de serbest mi? (plan.md ve ciftokey: **evet**; pagat: hayır.)
-   → varsayılan **evet** (plan.md'ye sadık).
-6. **Göstergeyi çekip bitirme:** deste bitince gösterge alınabilir mi?
-7. **Deste bitişi puanlaması:** puansız + eldeki joker 101 mi, yoksa normal ceza mı?
-8. **Eş/takım:** plan.md 2 takım diyor; **puanlar takım toplamı** üzerinden mi birleşir?
-   (Yoksa bireysel skor + takım kazananı mı?) — `RuleSet.teams` bunu taşır.
-9. **Çok oyunculu & tur sayısı** (plan.md §11) — motor `dealCount` ile parametrik olacak.
+| # | Soru | **Karar** |
+|---|---|---|
+| 1 | Sahte okey semantiği | **Okey yerine geçer** — evrensel joker **değildir**; yalnızca okey koordinatını (gösterge+1) temsil eder |
+| 2 | Gösterge sahte okey çıkarsa | **Bir alt taş** gösterge olur; o da sahte okey ise **zincirleme** bir alt taşa inilir |
+| 3 | Artırmalı açma | **Yok** — her açan 101'den başlar |
+| 4 | Okeyi yerinden alma | **Var** — masadaki okeyi gerçek taşı koyup ele al (açmış olma şartıyla) |
+| 5 | Eş / takım puanları | **Birleştirilir** — puanlar takım toplamı üzerinden |
+
+**Kalan, varsayılan uygulanacak noktalar:** ilk oyuncu & taş sayısı (22'li), deste bitince
+göstergeyi çekip bitirme, deste bitişi puanlaması, tur sayısı (`dealCount`) — hepsi
+kaynak varsayılanıyla yukarıdaki `RuleSet`'te tanımlı. İtiraz olursa yalnızca değer değişir.
 
 ---
 
@@ -508,5 +520,5 @@ interface RuleSet {
 - **VIP Okey — Okey/Sahte Okey nasıl belirlenir** (gösterge+1):
   <https://casualino-jsc.helpshift.com/hc/tr/29-vip-okey/faq/2780>
 
-> Bazı kurallar bölgeden bölgeye ve uygulamadan uygulamaya değişir; çelişkiler §15'te
-> **açık karar** olarak işaretlendi. Motor bu farkları `RuleSet` ile taşır.
+> Bazı detaylar bölgeden bölgeye ve uygulamadan uygulamaya değişir. Bu projede **Karar 1–5
+> kilitlendi** (§15 Karar Günlüğü); kalan noktalar `RuleSet` motor varsayılanı olarak taşınır.
